@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <h1>{{ msg }}</h1>
         <nav>
             <ul>
                 <li>
@@ -19,7 +20,12 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  }
 }
 </script>
 
