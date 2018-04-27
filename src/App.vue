@@ -23,7 +23,7 @@ export default {
   name: 'App',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to My Vue.js App'
     }
   }
 }
@@ -33,9 +33,9 @@ export default {
 #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+    margin-left: 60px;
 }
 body {
     margin: 0;
