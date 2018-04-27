@@ -9,8 +9,8 @@
           <option>/</option>
         </select>
         <Fraction
-          :numerator="1"
-          :denominator="2"
+          :numerator="numerator"
+          :denominator="denominator"
         />
         <!-- Компонент дроби. Состои из знака и Fraction.
         Если слева, то имеет dropbown с +/*-
@@ -26,22 +26,31 @@ export default {
     Fraction
   },
   props: {
-    sign: {
-      type: String,
+    part: {
+      type: Object,
       required: true,
       default: function () {
-        return ''
+        return {
+          id: -1,
+          sign: '',
+          fraction: {
+            numerator: '',
+            denominator: ''
+          }
+        }
       }
     }
   },
   methods: {
     showSign: function () {
-      if (['+', '-', '*', '/'].indexOf(this.sign) > -1) return true
+      if (['+', '-', '*', '/'].indexOf(this.part.sign) > -1) return true
     }
   },
   data: function () {
     return {
-      selected: this.sign
+      selected: this.part.sign,
+      numerator: this.part.fraction.numerator,
+      denominator: this.part.fraction.denominator
     }
   }
 }
