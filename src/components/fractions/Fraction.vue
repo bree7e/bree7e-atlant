@@ -4,14 +4,16 @@
             <input
                 class="fraction__numerator-field"
                 type="number"
-                :value="numerator"
+                v-model="numerator"
+                @keyup="onChange()"
                 >
         </div>
         <div class="fraction__denominator">
             <input
                 class="fraction__denominator-field"
                 type="number"
-                :value="denominator"
+                v-model="denominator"
+                @keyup="onChange()"
                 >
         </div>
     </div>
@@ -20,9 +22,26 @@
 <script>
 export default {
   props: {
-    numerator: Number,
-    denominator: Number,
+    fraction: {
+      type: Object,
+      required: true
+    },
     isEditable: Boolean
+  },
+  data: function () {
+    return {
+      numerator: this.fraction.numerator,
+      denominator: this.fraction.denominator
+    }
+  },
+  methods: {
+    onChange: function () {
+      var newFraction = {
+        numerator: this.numerator,
+        denominator: this.denominator
+      }
+      this.$emit('fraction-change', newFraction)
+    }
   }
 }
 </script>

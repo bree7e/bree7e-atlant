@@ -5,11 +5,11 @@
                 v-for="part in expressionParts"
                 :key="part.id"
                 :part="part"
+                @part-change="onPartChange($event)"
             />
             <span class="expression__equal-sign">=</span>
             <Fraction
-            :numerator="result.numerator"
-            :denominator="result.denominator"
+            :fraction="result"
             />
         </div>
         <button class="add-button" @click="addEmptyFraction()">ADD FRACTION</button>
@@ -68,7 +68,7 @@ export default {
   methods: {
     addEmptyFraction: function () {
       var newFraction = {
-        id: this.partCount,
+        id: this.partsCount,
         sign: '+',
         fraction: {
           numerator: '',
@@ -79,6 +79,9 @@ export default {
     },
     addFraction: function (fraction) {
       this.expressionParts.push(fraction)
+    },
+    onPartChange: function (part) {
+      console.log('part changed', part)
     }
   }
 }

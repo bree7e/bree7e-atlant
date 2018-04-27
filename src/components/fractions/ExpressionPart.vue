@@ -2,6 +2,7 @@
     <div class="expression-part">
         <select class="expression-part__sign"
           v-model="selected"
+          @change="onSignChange()"
           v-if="showSign()">
           <option>+</option>
           <option>-</option>
@@ -9,8 +10,8 @@
           <option>/</option>
         </select>
         <Fraction
-          :numerator="numerator"
-          :denominator="denominator"
+          :fraction="fraction"
+          @fraction-change="onFractionChange($event)"
         />
         <!-- Компонент дроби. Состои из знака и Fraction.
         Если слева, то имеет dropbown с +/*-
@@ -44,13 +45,28 @@ export default {
   methods: {
     showSign: function () {
       if (['+', '-', '*', '/'].indexOf(this.part.sign) > -1) return true
+    },
+    onFractionChange: function (fraction) {
+      var newPart = {
+        id: this.part.id,
+        sign: this.selected,
+        fraction: fraction
+      }
+      this.$emit('part-change', newPart)
+    },
+    onSignChange: function () {
+      var newPart = {
+        id: this.part.id,
+        sign: this.selected,
+        fraction: this.fraction
+      }
+      this.$emit('part-change', newPart)
     }
   },
   data: function () {
     return {
       selected: this.part.sign,
-      numerator: this.part.fraction.numerator,
-      denominator: this.part.fraction.denominator
+      fraction: this.part.fraction
     }
   }
 }
