@@ -1,13 +1,18 @@
 <template>
     <div class="expression">
         <ExpressionPart
-            v-for="i in 3"
-            :key="i"
+            :key="1"
+            :sign="''"
+        />
+        <ExpressionPart
+            v-for="i in n"
+            :key="i + 1"
+            :sign="'+'"
         />
         <span class="expression__equal-sign">=</span>
         <Fraction
           :numerator="rNumerator"
-          :denominator="7"
+          :denominator="rDenominator"
         />
 
     </div>
@@ -22,14 +27,27 @@ export default {
     ExpressionPart,
     Fraction
   },
+  props: {
+    expressionParts: {
+      type: Number
+    }
+  },
   computed: {
     rNumerator: function () {
       return 2 + 2
     },
     rDenominator: function () {
       return 3 + 5
+    },
+    n: function () {
+      return this.expressionParts - 1
     }
   }
+//   data: function () {
+//     return {
+//       n: this.expressionParts
+//     }
+//   }
 }
 </script>
 

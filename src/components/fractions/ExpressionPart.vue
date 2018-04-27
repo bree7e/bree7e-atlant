@@ -1,6 +1,8 @@
 <template>
     <div class="expression-part">
-        <select class="expression-part__sign" v-model="selected">
+        <select class="expression-part__sign"
+          v-model="selected"
+          v-if="showSign()">
           <option>+</option>
           <option>-</option>
           <option>*</option>
@@ -28,13 +30,13 @@ export default {
       type: String,
       required: true,
       default: function () {
-        return '+'
+        return ''
       }
     }
   },
   methods: {
-    inLeftPart: function () {
-      if (this.sign in ['+', '-', '*', '/']) return true
+    showSign: function () {
+      if (['+', '-', '*', '/'].indexOf(this.sign) > -1) return true
     }
   },
   data: function () {

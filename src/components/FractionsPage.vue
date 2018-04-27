@@ -1,8 +1,10 @@
 <template>
   <div class="fraction-page">
     <h2>Калькулятор дробей</h2>
-    <Expression/>
-    <button class="fraction-page__add-button">ADD FRACTION</button>
+    <Expression
+     :expressionParts="count"
+     />
+    <button class="fraction-page__add-button" @click="addFraction()">ADD FRACTION</button>
   </div>
 </template>
 
@@ -12,6 +14,17 @@ import Expression from '@/components/fractions/Expression'
 export default {
   components: {
     Expression
+  },
+  data: function () {
+    return {
+      count: 2
+    }
+  },
+  methods: {
+    addFraction: function () {
+      this.count++
+      console.log(this.count)
+    }
   }
 }
 </script>

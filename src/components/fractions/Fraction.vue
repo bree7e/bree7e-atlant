@@ -53,7 +53,7 @@ input::-webkit-inner-spin-button {
   display: inline;
   &__numerator {
     padding-bottom: 0.5rem;
-    border-bottom: 3px solid;
+    border-bottom: 2px solid;
     width: 3.5rem;
     &-field {
       @include control();
