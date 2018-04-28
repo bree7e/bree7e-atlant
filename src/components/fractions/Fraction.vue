@@ -6,6 +6,7 @@
                 type="number"
                 v-model="numerator"
                 @keyup="onChange()"
+                :disabled="!isEditable"
                 >
         </div>
         <div class="fraction__denominator">
@@ -14,6 +15,7 @@
                 type="number"
                 v-model="denominator"
                 @keyup="onChange()"
+                :disabled="!isEditable"
                 >
         </div>
     </div>
@@ -26,7 +28,10 @@ export default {
       type: Object,
       required: true
     },
-    isEditable: Boolean
+    isEditable: {
+      type: Boolean,
+      default: true
+    }
   },
   data: function () {
     return {

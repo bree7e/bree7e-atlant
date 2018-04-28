@@ -9,7 +9,8 @@
             />
             <span class="expression__equal-sign">=</span>
             <Fraction
-            :fraction="result"
+                :fraction="result"
+                :isEditable="false"
             />
         </div>
         <button class="add-button" @click="addEmptyFraction()">ADD FRACTION</button>
