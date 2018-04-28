@@ -4,7 +4,7 @@
         v-for="comment of comments"
         :key="comment.id"
         :comment="comment"
-        @remove="removeClick"
+        @delete="onDeleteClick"
         />
   </ul>
 </template>
@@ -14,22 +14,14 @@ import Comment from '@/components/comments/Comment.vue'
 
 export default {
   props: {
-    data: Array
+    comments: Array
   },
   components: {
     Comment
   },
-  data: function () {
-    return {
-      comments: this.data
-    }
-  },
   methods: {
-    removeClick (idToRemove) {
-      console.log('Удаляем комментарий')
-      // this.todos = this.todos.filter(todo => {
-      // return todo.id !== idToRemove
-      // })
+    onDeleteClick (id) {
+      this.$emit('delete-request', id)
     }
   }
 }

@@ -1,18 +1,19 @@
 <template>
   <li class="comment">
-    {{ body }}
-    <button class="comment__delete-btn">Удалить</button>
+    {{ comment.body }}
+    <button
+      class="comment__delete-button"
+      @click="$emit('delete', comment.id)"
+      >Удалить</button>
   </li>
 </template>
 
 <script>
 export default {
   props: {
-    comment: Object
-  },
-  data: function () {
-    return {
-      body: this.comment.body
+    comment: {
+      type: Object,
+      required: true
     }
   }
 }

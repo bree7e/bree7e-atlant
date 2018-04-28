@@ -2,8 +2,8 @@
   <div>
     <h2>Комментарии и WebSocket</h2>
     <CommentList
-      :data="data"
-      @delete="onRequestToDeleteComment"
+      :comments="comments"
+      @delete-request="onRequestToDeleteComment"
     />
   </div>
 </template>
@@ -22,7 +22,7 @@ export default {
     return {
       socket: null,
       connected: false,
-      data: [
+      comments: [
         { id: autoId++, body: 'Тестовый коммент 1' },
         { id: autoId++, body: 'Это шедевр' },
         { id: autoId++, body: 'Это прекрасно' },
@@ -33,10 +33,12 @@ export default {
   },
   methods: {
     connect: function () {
-      this.socket = new WebSocket('ws://localhost:4500')
+      // const server = 'ws://localhost:4500'
+      const server = 'ws://echo.websocket.org'
+      this.socket = new WebSocket(server)
 
       this.socket.onopen = function () {
-        console.log('Соединение установлено')
+        console.log('Соединение установлено c сервером', server)
         this.connected = true
       }
 
@@ -64,11 +66,37 @@ export default {
         console.error('Попытка отправить сообщение на закрытом соединении')
       }
     },
-    onRequestToDeleteComment: function (event) {
-      console.log('Запрос номер ', requestId)
+    getComment (id) {
+      return this.comments.filter(comment => {
+        return comment.id === id
+      })
+    },
+    deleteComment (id) {
+      console.log(`Комментарий ${id} удалён`)
+      this.comments = this.comments.filter(comment => {
+        return comment.id !== id
+      })
+    },
+    caseHelperShouldDelete (n) {
+      switch (n % 3) {
+        case 0:
+          console.log('Allow')
+          return 'allow'
+        case 1:
+          console.log('Deny')
+          return 'deny'
+        case 2:
+          console.log('Timeout')
+          return 'timeout'
+      }
+    },
+    onRequestToDeleteComment: function (commentId) {
+      // console.log('Запрос номер ', requestId, ' Коммент ', commentId)
+      const action = this.caseHelperShouldDelete(requestId)
       var message = {
         id: requestId++,
-        body: 'something'
+        commentId: commentId,
+        action: action
       }
       var jsonMessage = JSON.stringify(message)
       this.socket.send(jsonMessage)
@@ -76,19 +104,13 @@ export default {
   },
   created: function () {
     this.connect()
+    const self = this
     this.socket.onmessage = function (event) {
       console.log(event.data)
-      var id = JSON.parse(event.data).id
-      switch (id % 3) {
-        case 0:
-          console.log('Case 1. Данные ' + event.data)
-          break
-        case 1:
-          console.log('Case 2. Данные ' + event.data)
-          break
-        case 2:
-          console.log('Case 3. Данные ' + event.data)
-          break
+      const action = JSON.parse(event.data).action
+      if (action === 'allow') {
+        const id = JSON.parse(event.data).commentId
+        self.deleteComment(id)
       }
     }
   },
