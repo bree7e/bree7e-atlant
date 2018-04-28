@@ -1,5 +1,11 @@
 <template>
   <div>
+    <ul v-if="requests.length > 0">
+      Запросы
+      <li v-for="r of requests" :key="r.id">
+        {{ r.id }} в состоянии {{ r.status }}
+      </li>
+    </ul>
     <h2>Комментарии и WebSocket</h2>
     <CommentList
       :comments="comments"
@@ -28,7 +34,9 @@ export default {
         { id: autoId++, body: 'Это прекрасно' },
         { id: autoId++, body: 'Лучшее, что я видел' },
         { id: autoId++, body: 'Два чая этому автору' }
-      ]
+      ],
+      // promise like массив для обработки ответов
+      requests: []
     }
   },
   methods: {
@@ -59,12 +67,32 @@ export default {
       this.socket.close()
       this.connected = false
     },
-    sendToServer: function (message) {
-      if (this.connected) {
+    sendToServer: function (id, message) {
+      if (!this.connected) {
         this.socket.send(message)
+        const request = {
+          id: id,
+          status: 'pending'
+        }
+        this.requests.push(request)
       } else {
         console.error('Попытка отправить сообщение на закрытом соединении')
       }
+    },
+    receivedFromServer: function (event) {
+      console.log(event.data)
+      const response = JSON.parse(event.data)
+      console.log(response.id)
+      this.fulfillRequest(response.id)
+      // здесь можно реализовать укникальные действия на клиенте
+      if (response.action === 'allow') {
+        const id = response.commentId
+        this.deleteComment(id)
+      }
+    },
+    fulfillRequest (id) {
+      console.log(`Запрос ${id} выполнен`)
+      this.requests.find(request => request.id === id).status = 'fulfilled'
     },
     getComment (id) {
       return this.comments.filter(comment => {
@@ -77,6 +105,7 @@ export default {
         return comment.id !== id
       })
     },
+    // Эмуляция разных вариантов ответа сервера
     caseHelperShouldDelete (n) {
       switch (n % 3) {
         case 0:
@@ -94,25 +123,18 @@ export default {
       // console.log('Запрос номер ', requestId, ' Коммент ', commentId)
       const action = this.caseHelperShouldDelete(requestId)
       var message = {
-        id: requestId++,
+        id: requestId,
         commentId: commentId,
         action: action
       }
       var jsonMessage = JSON.stringify(message)
-      this.socket.send(jsonMessage)
+      this.sendToServer(requestId, jsonMessage)
+      requestId++
     }
   },
   created: function () {
     this.connect()
-    const self = this
-    this.socket.onmessage = function (event) {
-      console.log(event.data)
-      const action = JSON.parse(event.data).action
-      if (action === 'allow') {
-        const id = JSON.parse(event.data).commentId
-        self.deleteComment(id)
-      }
-    }
+    this.socket.onmessage = this.receivedFromServer
   },
   destroyed: function () {
     this.disconnect()
