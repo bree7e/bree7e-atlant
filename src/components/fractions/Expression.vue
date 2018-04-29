@@ -81,6 +81,46 @@ export default {
     addFraction: function (fraction) {
       this.expressionParts.push(fraction)
     },
+    add: (a, b) => {
+      const numerator = (a.numerator * b.denominator) + (b.numerator * a.denominator)
+      const denominator = a.denominator * b.denominator
+      return {
+        numerator: numerator,
+        denominator: denominator
+      }
+    },
+    subtract: (a, b) => {
+      const numerator = (a.numerator * b.denominator) - (b.numerator * a.denominator)
+      const denominator = a.denominator * b.denominator
+      return {
+        numerator: numerator,
+        denominator: denominator
+      }
+    },
+    multiply: (a, b) => {
+      const numerator = a.numerator * b.numerator
+      const denominator = a.denominator * b.denominator
+      return {
+        numerator: numerator,
+        denominator: denominator
+      }
+    },
+    divide: (a, b) => {
+      const numerator = a.numerator * b.denominator
+      const denominator = a.denominator * b.numerator
+      return {
+        numerator: numerator,
+        denominator: denominator
+      }
+    },
+    simplify: (f) => {
+    //   const numerator = a.numerator * b.denominator
+    //   const denominator = a.denominator * b.numerator
+      return {
+        numerator: 1,
+        denominator: 1
+      }
+    },
     onPartChange: function (part) {
       console.log('part changed', part)
     }
