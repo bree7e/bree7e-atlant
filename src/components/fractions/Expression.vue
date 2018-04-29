@@ -39,12 +39,12 @@ export default {
       // TODO рекурсивно обойти массив expressionParts выполняя действие sign над fraction
       for (let i = 1; i < partsCount; i++) {
         const next = this.expressionParts[i]
-        console.log(i, next)
         if ((next.fraction.numerator === '') || (next.fraction.denominator === '')) {
           return { numerator: 0, denominator: 0 }
         }
         result = this.calculateParts(result, next)
       }
+      result.fraction = this.simplify(result.fraction)
       return result
     }
   },
@@ -84,10 +84,10 @@ export default {
     },
     addPart: function (part) {
       part.id = this.expressionParts.length
-      console.log('on add part', part)
+      // console.log('on add part', part)
       this.expressionParts.push(part)
     },
-    calculateParts: (a, b) => {
+    calculateParts: function (a, b) {
       let numerator
       let denominator
       switch (b.sign) {
@@ -115,26 +115,35 @@ export default {
           denominator: denominator
         }
       }
-    },  
-    getPrimeNumbers (max) { // через сито
-      let sieve = [], i, j, result = [];
+    },
+    getPrimeNumbers: (max) => { // через сито
+      let i
+      let j
+      let sieve = []
+      let result = []
       for (i = 2; i <= max; ++i) {
-          if (!sieve[i]) {
-              // i has not been marked -- it is prime
-              result.push(i);
-              for (j = i << 1; j <= max; j += i) {
-                  sieve[j] = true;
-              }
+        if (!sieve[i]) {
+          // i has not been marked -- it is prime
+          result.push(i)
+          for (j = i << 1; j <= max; j += i) {
+            sieve[j] = true
           }
+        }
       }
       return result
     },
-    simplify: (f) => {
-    //   const numerator = a.fraction.numerator * b.fraction.denominator
-    //   const denominator = a.fraction.denominator * b.fraction.numerator
+    euclidSearch: function (a, b) {
+      if (b === 0) {
+        return a
+      } else {
+        return this.euclidSearch(b, a % b)
+      }
+    },
+    simplify: function (f) {
+      const divider = this.euclidSearch(f.numerator, f.denominator)
       return {
-        numerator: 1,
-        denominator: 1
+        numerator: f.numerator / divider,
+        denominator: f.denominator / divider
       }
     },
     onPartChange: function (partToChange) {
