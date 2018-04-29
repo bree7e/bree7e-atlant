@@ -13,9 +13,6 @@
           :fraction="fraction"
           @fraction-change="onFractionChange($event)"
         />
-        <!-- Компонент дроби. Состои из знака и Fraction.
-        Если слева, то имеет dropbown с +/*-
-        Если справа, то span c = -->
     </div>
 </template>
 

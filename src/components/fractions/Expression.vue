@@ -33,16 +33,19 @@ export default {
   },
   computed: {
     result: function () {
-      let resultDenominator = 0
-      let resultNumerator = 0
-      for (const part of this.expressionParts) {
-        resultNumerator += Number(part.fraction.numerator)
-        resultDenominator += Number(part.fraction.denominator)
+      const partsCount = this.expressionParts.length
+      if (partsCount < 2) return null
+      let result = this.expressionParts[0]
+      // TODO рекурсивно обойти массив expressionParts выполняя действие sign над fraction
+      for (let i = 1; i < partsCount; i++) {
+        const next = this.expressionParts[i]
+        console.log(i, next)
+        if ((next.fraction.numerator === '') || (next.fraction.denominator === '')) {
+          return { numerator: 0, denominator: 0 }
+        }
+        result = this.calculate(result, next)
       }
-      return {
-        numerator: resultNumerator,
-        denominator: resultDenominator
-      }
+      return result
     },
     partsCount: function () {
       return this.expressionParts.length
@@ -53,16 +56,16 @@ export default {
       id: 0,
       sign: '',
       fraction: {
-        numerator: 1,
-        denominator: 5
+        numerator: 3,
+        denominator: 7
       }
     })
     this.addFraction({
       id: 1,
       sign: '+',
       fraction: {
-        numerator: 3,
-        denominator: 4
+        numerator: 2,
+        denominator: 5
       }
     })
   },
@@ -81,41 +84,35 @@ export default {
     addFraction: function (fraction) {
       this.expressionParts.push(fraction)
     },
-    add: (a, b) => {
-      const numerator = (a.numerator * b.denominator) + (b.numerator * a.denominator)
-      const denominator = a.denominator * b.denominator
-      return {
-        numerator: numerator,
-        denominator: denominator
+    calculate: (a, b) => {
+      let numerator
+      let denominator
+      switch (b.sign) {
+        case '+':
+          numerator = (a.fraction.numerator * b.fraction.denominator) + (b.fraction.numerator * a.fraction.denominator)
+          denominator = a.fraction.denominator * b.fraction.denominator
+          break
+        case '-':
+          numerator = (a.fraction.numerator * b.fraction.denominator) - (b.fraction.numerator * a.fraction.denominator)
+          denominator = a.fraction.denominator * b.fraction.denominator
+          break
+        case '*':
+          numerator = a.fraction.numerator * b.fraction.numerator
+          denominator = a.fraction.denominator * b.fraction.denominator
+          break
+        case '/':
+          numerator = a.fraction.numerator * b.fraction.denominator
+          denominator = a.fraction.denominator * b.fraction.numerator
+          break
       }
-    },
-    subtract: (a, b) => {
-      const numerator = (a.numerator * b.denominator) - (b.numerator * a.denominator)
-      const denominator = a.denominator * b.denominator
-      return {
-        numerator: numerator,
-        denominator: denominator
-      }
-    },
-    multiply: (a, b) => {
-      const numerator = a.numerator * b.numerator
-      const denominator = a.denominator * b.denominator
-      return {
-        numerator: numerator,
-        denominator: denominator
-      }
-    },
-    divide: (a, b) => {
-      const numerator = a.numerator * b.denominator
-      const denominator = a.denominator * b.numerator
       return {
         numerator: numerator,
         denominator: denominator
       }
     },
     simplify: (f) => {
-    //   const numerator = a.numerator * b.denominator
-    //   const denominator = a.denominator * b.numerator
+    //   const numerator = a.fraction.numerator * b.fraction.denominator
+    //   const denominator = a.fraction.denominator * b.fraction.numerator
       return {
         numerator: 1,
         denominator: 1
@@ -128,7 +125,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 .expression {
     display: flex;
     flex-wrap: wrap;

@@ -4,8 +4,8 @@
             <input
                 class="fraction__numerator-field"
                 type="number"
-                v-model="numerator"
-                @keyup="onChange()"
+                :value="fraction.numerator"
+                @input="onNumeratorChange($event.target.value)"
                 :disabled="!isEditable"
                 >
         </div>
@@ -13,8 +13,8 @@
             <input
                 class="fraction__denominator-field"
                 type="number"
-                v-model="denominator"
-                @keyup="onChange()"
+                :value="fraction.denominator"
+                @input="onDenominatorChange($event.target.value)"
                 :disabled="!isEditable"
                 >
         </div>
@@ -33,17 +33,18 @@ export default {
       default: true
     }
   },
-  data: function () {
-    return {
-      numerator: this.fraction.numerator,
-      denominator: this.fraction.denominator
-    }
-  },
   methods: {
-    onChange: function () {
-      var newFraction = {
-        numerator: this.numerator,
-        denominator: this.denominator
+    onNumeratorChange: function (newValue) {
+      const newFraction = {
+        numerator: Number(newValue),
+        denominator: this.fraction.denominator
+      }
+      this.$emit('fraction-change', newFraction)
+    },
+    onDenominatorChange: function (newValue) {
+      const newFraction = {
+        numerator: this.fraction.numerator,
+        denominator: Number(newValue)
       }
       this.$emit('fraction-change', newFraction)
     }
