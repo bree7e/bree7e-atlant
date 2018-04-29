@@ -83,8 +83,8 @@ export default {
       this.addPart(emptyFraction)
     },
     addPart: function (part) {
-      part.id = this.expressionParts.length  
-      console.log('on add part', part);
+      part.id = this.expressionParts.length
+      console.log('on add part', part)
       this.expressionParts.push(part)
     },
     calculateParts: (a, b) => {
@@ -111,10 +111,23 @@ export default {
       return {
         sign: a.sign,
         fraction: {
-            numerator: numerator,
-            denominator: denominator
+          numerator: numerator,
+          denominator: denominator
         }
       }
+    },  
+    getPrimeNumbers (max) { // через сито
+      let sieve = [], i, j, result = [];
+      for (i = 2; i <= max; ++i) {
+          if (!sieve[i]) {
+              // i has not been marked -- it is prime
+              result.push(i);
+              for (j = i << 1; j <= max; j += i) {
+                  sieve[j] = true;
+              }
+          }
+      }
+      return result
     },
     simplify: (f) => {
     //   const numerator = a.fraction.numerator * b.fraction.denominator
