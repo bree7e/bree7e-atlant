@@ -1,8 +1,8 @@
 <template>
     <div class="expression-part">
         <select class="expression-part__sign"
-          v-model="selected"
-          @change="onSignChange()"
+          :value="part.sign"
+          @change="onSignChange($event.target.value)"
           v-if="showSign()">
           <option>+</option>
           <option>-</option>
@@ -10,7 +10,7 @@
           <option>/</option>
         </select>
         <Fraction
-          :fraction="fraction"
+          :fraction="part.fraction"
           @fraction-change="onFractionChange($event)"
         />
     </div>
@@ -26,44 +26,28 @@ export default {
   props: {
     part: {
       type: Object,
-      required: true,
-      default: function () {
-        return {
-          id: -1,
-          sign: '',
-          fraction: {
-            numerator: '',
-            denominator: ''
-          }
-        }
-      }
+      required: true
     }
   },
   methods: {
     showSign: function () {
       if (['+', '-', '*', '/'].indexOf(this.part.sign) > -1) return true
     },
-    onFractionChange: function (fraction) {
+    onFractionChange: function (newFraction) {
       var newPart = {
         id: this.part.id,
-        sign: this.selected,
-        fraction: fraction
+        sign: this.part.sign,
+        fraction: newFraction
       }
       this.$emit('part-change', newPart)
     },
-    onSignChange: function () {
+    onSignChange: function (newSign) {
       var newPart = {
         id: this.part.id,
-        sign: this.selected,
-        fraction: this.fraction
+        sign: newSign,
+        fraction: this.part.fraction
       }
       this.$emit('part-change', newPart)
-    }
-  },
-  data: function () {
-    return {
-      selected: this.part.sign,
-      fraction: this.part.fraction
     }
   }
 }

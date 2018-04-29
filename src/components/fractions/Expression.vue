@@ -9,11 +9,11 @@
             />
             <span class="expression__equal-sign">=</span>
             <Fraction
-                :fraction="result"
+                :fraction="result.fraction"
                 :isEditable="false"
             />
         </div>
-        <button class="button button--vue" @click="addEmptyFraction()">ADD FRACTION</button>
+        <button class="button button--vue" @click="addEmptyPart()">ADD FRACTION</button>
     </div>
 </template>
 
@@ -43,48 +43,51 @@ export default {
         if ((next.fraction.numerator === '') || (next.fraction.denominator === '')) {
           return { numerator: 0, denominator: 0 }
         }
-        result = this.calculate(result, next)
+        result = this.calculateParts(result, next)
       }
       return result
-    },
-    partsCount: function () {
-      return this.expressionParts.length
     }
   },
   created: function () {
-    this.addFraction({
-      id: 0,
+    this.addPart({
       sign: '',
       fraction: {
         numerator: 3,
         denominator: 7
       }
     })
-    this.addFraction({
-      id: 1,
+    this.addPart({
       sign: '+',
       fraction: {
         numerator: 2,
         denominator: 5
       }
     })
+    this.addPart({
+      sign: '-',
+      fraction: {
+        numerator: 4,
+        denominator: 35
+      }
+    })
   },
   methods: {
-    addEmptyFraction: function () {
-      var newFraction = {
-        id: this.partsCount,
+    addEmptyPart: function () {
+      var emptyFraction = {
         sign: '+',
         fraction: {
           numerator: '',
           denominator: ''
         }
       }
-      this.addFraction(newFraction)
+      this.addPart(emptyFraction)
     },
-    addFraction: function (fraction) {
-      this.expressionParts.push(fraction)
+    addPart: function (part) {
+      part.id = this.expressionParts.length  
+      console.log('on add part', part);
+      this.expressionParts.push(part)
     },
-    calculate: (a, b) => {
+    calculateParts: (a, b) => {
       let numerator
       let denominator
       switch (b.sign) {
@@ -106,8 +109,11 @@ export default {
           break
       }
       return {
-        numerator: numerator,
-        denominator: denominator
+        sign: a.sign,
+        fraction: {
+            numerator: numerator,
+            denominator: denominator
+        }
       }
     },
     simplify: (f) => {
@@ -118,8 +124,11 @@ export default {
         denominator: 1
       }
     },
-    onPartChange: function (part) {
-      console.log('part changed', part)
+    onPartChange: function (partToChange) {
+      const p = this.expressionParts.find(part => part.id === partToChange.id)
+      p.fraction = partToChange.fraction
+      p.sign = partToChange.sign
+      console.log('part changed', partToChange)
     }
   }
 }
