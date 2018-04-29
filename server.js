@@ -11,26 +11,26 @@ ws.on('connection', function(ws) {
 
     ws.on('message', function(jsonMessage) {
         console.log('Получено сообщение ' + jsonMessage);
-
+        let delay = Math.round(Math.random() * 5000) + 1000;
         const message = JSON.parse(jsonMessage);
-        switch (message.id % 3) {
-            case 0:
+        switch (message.action) {
+            case 'allow':
                 console.log("Разрешить " + jsonMessage); 
-                message.decision = 'allow';
                 break;
-            case 1:
+            case 'timeout':
                 console.log("Запретить " + jsonMessage);        
-                message.decision = 'deny';
+                delay *= 5
+                return false
                 break;
-            case 2:
-                console.log("Не отправлять " + jsonMessage);
-                return false;        
         }
+        message.delay = delay
 
         const newMessage = JSON.stringify(message);
-        for (var key in clients) {
-            clients[key].send(newMessage);
-        }
+        setTimeout(() => {
+            for (var key in clients) {
+                clients[key].send(newMessage);
+            }
+        }, delay)
     });
 
     ws.on('close', function() {

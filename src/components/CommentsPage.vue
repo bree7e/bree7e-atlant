@@ -1,16 +1,16 @@
 <template>
   <div>
-    <ul v-if="requests.length > 0">
-      Запросы
-      <li v-for="r of requests" :key="r.id">
-        {{ r.id }} в состоянии {{ r.status }}
-      </li>
-    </ul>
     <h2>Комментарии и WebSocket</h2>
     <CommentList
       :comments="comments"
       @delete-request="onRequestToDeleteComment"
     />
+    <ul v-if="requests.length > 0">
+      <h3>Запросы</h3>
+      <li v-for="r of requests" :key="r.id">
+        {{ r.id }} в состоянии {{ r.status }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -35,14 +35,15 @@ export default {
         { id: autoId++, body: 'Лучшее, что я видел' },
         { id: autoId++, body: 'Два чая этому автору' }
       ],
+      timeout: 3500,
       // promise like массив для обработки ответов
       requests: []
     }
   },
   methods: {
     connect: function () {
-      // const server = 'ws://localhost:4500'
-      const server = 'ws://echo.websocket.org'
+      const server = 'ws://localhost:4500'
+      // const server = 'ws://echo.websocket.org'
       this.socket = new WebSocket(server)
 
       this.socket.onopen = function () {
@@ -75,29 +76,47 @@ export default {
           status: 'pending'
         }
         this.requests.push(request)
+        const self = this
+        setTimeout(function () {
+          self.setRequestStatus(id, 'timeouted')
+        }, self.timeout)
       } else {
         console.error('Попытка отправить сообщение на закрытом соединении')
       }
     },
     receivedFromServer: function (event) {
-      console.log(event.data)
+      console.log('Вернулось ', event.data)
       const response = JSON.parse(event.data)
-      console.log(response.id)
-      this.fulfillRequest(response.id)
-      // здесь можно реализовать укникальные действия на клиенте
-      if (response.action === 'allow') {
+      const result = this.setRequestStatus(response.id, 'fulfilled')
+      // здесь можно реализовать уникальные действия на клиенте
+      if (result && (response.action === 'allow')) {
         const id = response.commentId
         this.deleteComment(id)
       }
     },
-    fulfillRequest (id) {
-      console.log(`Запрос ${id} выполнен`)
-      this.requests.find(request => request.id === id).status = 'fulfilled'
+    setRequestStatus (id, status) {
+      if ((this.getRequest(id).status === 'fulfilled') && (status === 'timeouted')) {
+        console.warn(`Таймаут по запросу ${id} отклонён, т.к. запрос был выполнен`)
+        return false
+      }
+      if (this.getRequest(id).status !== 'pending') {
+        console.warn(`Запрос ${id} в состоянии ${this.getRequest(id).status}. ${status} отклонено`)
+        return false
+      }
+      switch (status) {
+        case 'timeouted':
+          console.log(`Запрос ${id} сброшен по таймауту`)
+          break
+        case 'fulfilled':
+          console.log(`Запрос ${id} выполнен`)
+          break
+      }
+      // TODO надо проставить всем
+      this.requests.find(request => request.id === id).status = status
+      return true
     },
-    getComment (id) {
-      return this.comments.filter(comment => {
-        return comment.id === id
-      })
+    getRequest (id) {
+      return this.requests.find(request => request.id === id)
     },
     deleteComment (id) {
       console.log(`Комментарий ${id} удалён`)
@@ -107,15 +126,12 @@ export default {
     },
     // Эмуляция разных вариантов ответа сервера
     caseHelperShouldDelete (n) {
-      switch (n % 3) {
+      switch (n % 2) {
         case 0:
-          console.log('Allow')
+          console.log(n, 'Allow')
           return 'allow'
         case 1:
-          console.log('Deny')
-          return 'deny'
-        case 2:
-          console.log('Timeout')
+          console.log(n, 'Timeout')
           return 'timeout'
       }
     },

@@ -91,6 +91,7 @@ export default {
 .expression-part {
   display: flex;
   align-items: center;
+  margin-bottom: 1.5rem;
   &__sign {
     @include control();
     margin: 1rem;

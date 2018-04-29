@@ -2,7 +2,7 @@
   <li class="comment">
     {{ comment.body }}
     <button
-      class="comment__delete-button"
+      class="button button--small"
       @click="$emit('delete', comment.id)"
       >Удалить</button>
   </li>

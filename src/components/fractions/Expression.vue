@@ -13,7 +13,7 @@
                 :isEditable="false"
             />
         </div>
-        <button class="add-button" @click="addEmptyFraction()">ADD FRACTION</button>
+        <button class="button button--vue" @click="addEmptyFraction()">ADD FRACTION</button>
     </div>
 </template>
 
@@ -91,6 +91,7 @@ export default {
 <style lang="scss">
 .expression {
     display: flex;
+    flex-wrap: wrap;
     &__equal-sign {
         font-size: 3rem;
         padding-top: 5px;
@@ -98,20 +99,5 @@ export default {
         margin-right: 1rem;
     }
 }
-.add-button {
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: 1px solid transparent;
-    margin-top: 1rem;
-    padding: 0.175rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 0.25rem;
-    color: #fff;
-    background-color: #42b983;
-    border-color: #42b983;
-}
+
 </style>
