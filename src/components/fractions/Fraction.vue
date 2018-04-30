@@ -1,23 +1,32 @@
 <template>
     <div class="fraction">
-        <div class="fraction__numerator">
-            <input
-                class="fraction__numerator-field"
-                type="number"
-                :value="fraction.numerator"
-                @input="onNumeratorChange($event.target.value)"
-                :disabled="!isEditable"
-                >
+        <div class="fraction__ok" v-if="isOk()">
+          <div class="fraction__numerator">
+              <input
+                  class="fraction__numerator-field"
+                  type="number"
+                  :value="fraction.numerator"
+                  @input="onNumeratorChange($event.target.value)"
+                  :disabled="!isEditable"
+                  >
+          </div>
+          <div class="fraction__denominator">
+              <input
+                  class="fraction__denominator-field"
+                  type="number"
+                  :value="fraction.denominator"
+                  @input="onDenominatorChange($event.target.value)"
+                  :disabled="!isEditable"
+                  >
+          </div>
         </div>
-        <div class="fraction__denominator">
-            <input
-                class="fraction__denominator-field"
-                type="number"
-                :value="fraction.denominator"
-                @input="onDenominatorChange($event.target.value)"
-                :disabled="!isEditable"
-                >
+        <div class="fraction__zero" v-if="isZero()">
+          0
         </div>
+        <div class="fraction__infinity" v-if="isInfinity()">
+          ∞
+        </div>
+
     </div>
 </template>
 
@@ -47,6 +56,39 @@ export default {
         denominator: Number(newValue)
       }
       this.$emit('fraction-change', newFraction)
+    },
+    isInfinityFraction: function () {
+      if (isNaN(this.fraction.numerator) || isNaN(this.fraction.denominator) || (this.fraction.denominator === 0)) {
+        return true
+      }
+      return false
+    },
+    isZeroFraction: function () {
+      if ((this.fraction.numerator === 0) && (this.fraction.denominator !== 0)) {
+        return true
+      }
+      return false
+    },
+    isOk: function () {
+      if (this.isEditable) {
+        return true
+      } else {
+        if ((!this.isInfinityFraction()) && (!this.isZeroFraction())) return true
+      }
+      return false
+    },
+    isZero: function () {
+      if ((!this.isEditable) && this.isZeroFraction()) {
+        return true
+      }
+      return false
+    },
+
+    isInfinity: function () {
+      if ((!this.isEditable) && this.isInfinityFraction()) {
+        return true
+      }
+      return false
     }
   }
 }
@@ -92,6 +134,14 @@ input::-webkit-inner-spin-button {
       @include control();
       width: 100%;
     }
+  }
+  &__zero {
+    font-size: 3rem;
+    padding-top: 5px;
+  }
+  &__infinity {
+    font-size: 3rem;
+    padding-top: 5px;
   }
 }
 </style>
