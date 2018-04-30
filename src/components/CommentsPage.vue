@@ -42,8 +42,8 @@ export default {
   },
   methods: {
     connect: function () {
-      const server = 'ws://localhost:4500'
-      // const server = 'ws://echo.websocket.org'
+      // const server = 'ws://localhost:4500'
+      const server = 'ws://echo.websocket.org'
       this.socket = new WebSocket(server)
 
       this.socket.onopen = function () {

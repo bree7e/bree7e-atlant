@@ -1,5 +1,6 @@
 <template>
     <div class="expression-part">
+      <div class="expression-part__main">
         <select class="expression-part__sign"
           :value="part.sign"
           @change="onSignChange($event.target.value)"
@@ -13,6 +14,12 @@
           :fraction="part.fraction"
           @fraction-change="onFractionChange($event)"
         />
+      </div>
+      <div class="expression-part__error-list" v-show="false">
+        <p class="expression-part__error">Введите числитель</p>
+        <p class="expression-part__error">Введите знаменатель</p>
+        <p class="expression-part__error">Делить на 0 нельзя</p>
+      </div>
     </div>
 </template>
 
@@ -70,13 +77,27 @@ export default {
 }
 
 .expression-part {
-  display: flex;
-  align-items: center;
   margin-bottom: 1.5rem;
+  // margin-right: 1rem;
+  &__main {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
   &__sign {
     @include control();
-    margin: 1rem;
+    margin-right: 1rem;
     width: 3.5rem;
+  }
+  &--error {
+    border: 2px solid #f7654e;
+    border-radius: 5px;
+  }
+  &__error-list {
+    color: #f7654e;
+    font-size: 0.75rem;
+  }
+  &__error {
   }
 }
 </style>

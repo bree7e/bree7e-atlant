@@ -1,20 +1,22 @@
 <template>
-    <div>
-        <div class="expression">
-            <ExpressionPart
-                v-for="part in expressionParts"
-                :key="part.id"
-                :part="part"
-                @part-change="onPartChange($event)"
-            />
-            <span class="expression__equal-sign">=</span>
-            <Fraction
-                :fraction="result.fraction"
-                :isEditable="false"
-            />
-        </div>
-        <button class="button button--vue" @click="addEmptyPart()">ADD FRACTION</button>
+  <div>
+    <div class="expression">
+      <ExpressionPart
+        v-for="part in expressionParts"
+        :key="part.id"
+        :part="part"
+        @part-change="onPartChange($event)"
+      />
+      <span class="expression__equal-sign">=</span>
+      <div class="expression__result">
+        <Fraction
+          :fraction="result.fraction"
+          :isEditable="false"
+        />
+      </div>
     </div>
+    <button class="button button--vue" @click="addEmptyPart()">ADD FRACTION</button>
+  </div>
 </template>
 
 <script>
@@ -162,9 +164,12 @@ export default {
     flex-wrap: wrap;
     &__equal-sign {
         font-size: 3rem;
-        padding-top: 5px;
+        padding-top: 12px;
         margin-left: 1rem;
         margin-right: 1rem;
+    }
+    &__result {
+        padding: 0.5rem;
     }
 }
 

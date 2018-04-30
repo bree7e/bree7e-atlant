@@ -26,7 +26,6 @@
         <div class="fraction__infinity" v-if="isInfinity()">
           ∞
         </div>
-
     </div>
 </template>
 
@@ -137,11 +136,11 @@ input::-webkit-inner-spin-button {
   }
   &__zero {
     font-size: 3rem;
-    padding-top: 5px;
+    padding-top: 12px;
   }
   &__infinity {
     font-size: 3rem;
-    padding-top: 5px;
+    padding-top: 12px;
   }
 }
 </style>
