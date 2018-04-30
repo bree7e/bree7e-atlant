@@ -1,114 +1,117 @@
 // https://code.tutsplus.com/articles/data-structures-with-javascript-tree--cms-23393
 // http://www.internet-technologies.ru/articles/strukturirovanie-dannyh-s-pomoschyu-javascript-derevo.html
 
+function Tree (node) {
+  this._root = node
+}
+
 function Node (data) {
-    this.data = data
-    this.parent = null
-    this.left = null
-    this.right = null
+  this.data = data
+  this.parent = null
+  this.left = null
+  this.right = null
+}
+
+Tree.prototype.add = function(data, toNode) {
+  const newNode = new Node(data)
+  if (['+', '-', '*', '/'].indexOf(data) > -1) {
+    newNode.left = toNode
+    if (toNode.parent === null) {
+      this._root = newNode
+    } else {
+      toNode.parent.right = newNode
+      newNode.parent = toNode.parent
+    }
+    toNode.parent = newNode
+  } else {
+    newNode.parent = toNode
+    toNode.right = newNode
   }
+  return newNode    
+};
   
-  function Tree (node) {
-    this._root = node
-  }
+/*
+  2+3*4
+
+  +
+  ├── 2
+  └── *
+      ├── 3
+      └── 4
+*/
+const twoR = new Node(2)
+let exp = new Tree(twoR)
+const plusR = exp.add('+', twoR)
+const threeR = exp.add(3, plusR)
+const multiR = exp.add('*', threeR)
+const fourR = exp.add(4, multiR)
+
+console.log(exp);
   
-  Tree.prototype.add = function(data, toData, traversal) {
-      var child = new Node(data),
-          parent = null,
-          callback = function(node) {
-              if (node.data === toData) {
-                  parent = node;
-              }
-          };
-   
-      this.contains(callback, traversal);
-   
-      if (parent) {
-          parent.children.push(child);
-          child.parent = parent;
-      } else {
-          throw new Error('Cannot add node to a non-existent parent.');
-      }
-  };
-  
-  /*
-   one
-   ├── two
-   │   ├── four
-   │   └── five
-   └── three
-       ├── six
-       └── seven
-  */
-  
-  // let tree = new Tree('one');
-  
-  // tree._root.left = new Node('two')
-  // tree._root.left.parent = tree
-  
-  // tree._root.left.left = new Node('four')
-  // tree._root.left.left.parent = tree._root.left
-  
-  // tree._root.left.right = new Node('five')
-  // tree._root.left.right.parent = tree._root.left
-  
-  // tree._root.right = new Node('three')
-  // tree._root.right.parent = tree
-   
-  // tree._root.right.left = new Node('six')
-  // tree._root.right.left.parent = tree._root.left
-  
-  // tree._root.right.right = new Node('seven')
-  // tree._root.right.right.parent = tree._root.left
-  
-  
-  /*
-    2+3*4
-  
-   +
-   ├── 2
-   └── *
-       ├── 3
-       └── 4
-  */
-  
-let lastNode = null
+let toNode = null
 
 const two = new Node(2)
-lastNode = two
+toNode = two
 let expr = new Tree(two); // {_root: Node {data: 2, parent: null, left: null, right: null }}
 
 const plusNode = new Node('+') // операция ставится рутом последней левой ноды
-plusNode.left = lastNode
-if (lastNode.parent === null) {
+plusNode.left = toNode
+if (toNode.parent === null) {
     expr._root = plusNode
 } else {
-    lastNode.parent.right = plusNode
-    plusNode.parent = lastNode.parent
+    toNode.parent.right = plusNode
+    plusNode.parent = toNode.parent
 }
-lastNode.parent = plusNode
-lastNode = plusNode
+toNode.parent = plusNode
+toNode = plusNode
 
 const three = new Node(3)
-three.parent = lastNode
-lastNode.right = three
-lastNode = three
+three.parent = toNode
+toNode.right = three
+toNode = three
 
 const multiNode = new Node('*') 
-multiNode.left = lastNode
-if (lastNode.parent === null) {
+multiNode.left = toNode
+if (toNode.parent === null) {
     expr._root = multiNode
 } else {
-    lastNode.parent.right = multiNode
-    multiNode.parent = lastNode.parent
+    toNode.parent.right = multiNode
+    multiNode.parent = toNode.parent
 }
-lastNode.parent = multiNode
-lastNode = multiNode
+toNode.parent = multiNode
+toNode = multiNode
 
 const four = new Node(4)
-four.parent = lastNode
-lastNode.right = four
-lastNode = four
+four.parent = toNode
+toNode.right = four
+toNode = four
 
+function isEquivalent(a, b) {
+  // Create arrays of property names
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (aProps.length != bProps.length) {
+      return false;
+  }
+
+  for (var i = 0; i < aProps.length; i++) {
+      var propName = aProps[i];
+
+      // If values of same property are not equal,
+      // objects are not equivalent
+      if (a[propName] !== b[propName]) {
+          return false;
+      }
+  }
+
+  // If we made it this far, objects
+  // are considered equivalent
+  return true;
+}
 
 console.log(expr)
+
+console.log(isEquivalent(exp,expr));
