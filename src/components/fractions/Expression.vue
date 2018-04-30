@@ -165,7 +165,7 @@ export default {
     &__equal-sign {
         font-size: 3rem;
         padding-top: 12px;
-        margin-left: 1rem;
+        margin-left: 0.5rem;
         margin-right: 1rem;
     }
     &__result {

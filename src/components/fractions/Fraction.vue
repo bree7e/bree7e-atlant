@@ -3,21 +3,21 @@
         <div class="fraction__ok" v-if="isOk()">
           <div class="fraction__numerator">
               <input
-                  class="fraction__numerator-field"
-                  type="number"
-                  :value="fraction.numerator"
-                  @input="onNumeratorChange($event.target.value)"
-                  :disabled="!isEditable"
-                  >
+                class="fraction__numerator-field"
+                type="number"
+                :value="fraction.numerator"
+                @input="onNumeratorChange($event.target.value)"
+                :disabled="!isEditable"
+                >
           </div>
           <div class="fraction__denominator">
               <input
-                  class="fraction__denominator-field"
-                  type="number"
-                  :value="fraction.denominator"
-                  @input="onDenominatorChange($event.target.value)"
-                  :disabled="!isEditable"
-                  >
+                class="fraction__denominator-field"
+                type="number"
+                :value="fraction.denominator"
+                @input="onDenominatorChange($event.target.value)"
+                :disabled="!isEditable"
+                >
           </div>
         </div>
         <div class="fraction__zero" v-if="isZero()">
@@ -60,13 +60,11 @@ export default {
       if (isNaN(this.fraction.numerator) || isNaN(this.fraction.denominator) || (this.fraction.denominator === 0)) {
         return true
       }
-      return false
     },
     isZeroFraction: function () {
       if ((this.fraction.numerator === 0) && (this.fraction.denominator !== 0)) {
         return true
       }
-      return false
     },
     isOk: function () {
       if (this.isEditable) {
@@ -74,20 +72,17 @@ export default {
       } else {
         if ((!this.isInfinityFraction()) && (!this.isZeroFraction())) return true
       }
-      return false
     },
     isZero: function () {
       if ((!this.isEditable) && this.isZeroFraction()) {
         return true
       }
-      return false
     },
 
     isInfinity: function () {
       if ((!this.isEditable) && this.isInfinityFraction()) {
         return true
       }
-      return false
     }
   }
 }
@@ -136,11 +131,11 @@ input::-webkit-inner-spin-button {
   }
   &__zero {
     font-size: 3rem;
-    padding-top: 12px;
+    padding-top: 5px;
   }
   &__infinity {
     font-size: 3rem;
-    padding-top: 12px;
+    padding-top: 3px;
   }
 }
 </style>

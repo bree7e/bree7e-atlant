@@ -1,6 +1,7 @@
 <template>
     <div class="expression-part">
-      <div class="expression-part__main">
+      <div class="expression-part__main"
+        v-bind:class="{ 'expression-part__main--error': hasError() }">
         <select class="expression-part__sign"
           :value="part.sign"
           @change="onSignChange($event.target.value)"
@@ -15,11 +16,13 @@
           @fraction-change="onFractionChange($event)"
         />
       </div>
-      <div class="expression-part__error-list" v-show="false">
-        <p class="expression-part__error">Введите числитель</p>
-        <p class="expression-part__error">Введите знаменатель</p>
-        <p class="expression-part__error">Делить на 0 нельзя</p>
-      </div>
+      <ul class="expression-part__error-list" v-show="hasError">
+        <li
+          class="expression-part__error"
+          v-for="(error, index) in errors"
+          :key="index"
+        >{{ error }}</li>
+      </ul>
     </div>
 </template>
 
@@ -34,6 +37,11 @@ export default {
     part: {
       type: Object,
       required: true
+    }
+  },
+  data: function () {
+    return {
+      errors: []
     }
   },
   methods: {
@@ -55,6 +63,30 @@ export default {
         fraction: this.part.fraction
       }
       this.$emit('part-change', newPart)
+    },
+    check: function () {
+      this.errors = []
+      if (this.part.fraction.numerator === '') {
+        this.errors.push('Введите числитель')
+      }
+      if (this.part.fraction.denominator === '') {
+        this.errors.push('Введите знаменатель')
+      }
+      if ((this.part.fraction.denominator === 0) ||
+        ((this.part.sign === '/') && (this.part.fraction.numerator === 0))) {
+        this.errors.push('Делить на 0 нельзя')
+      }
+    },
+    hasError: function () {
+      return this.errors.length
+    }
+  },
+  watch: {
+    part: {
+      handler: function (newPart, oldPart) {
+        this.check()
+      },
+      deep: true
     }
   }
 }
@@ -78,26 +110,26 @@ export default {
 
 .expression-part {
   margin-bottom: 1.5rem;
-  // margin-right: 1rem;
+  margin-right: 0.5rem;
   &__main {
     padding: 0.5rem;
     display: flex;
     align-items: center;
+    &--error {
+      border: 2px solid #f7654e;
+      border-radius: 5px;
+    }
   }
   &__sign {
     @include control();
     margin-right: 1rem;
     width: 3.5rem;
   }
-  &--error {
-    border: 2px solid #f7654e;
-    border-radius: 5px;
-  }
   &__error-list {
+    list-style-type: none;
+    padding: 5px;
     color: #f7654e;
     font-size: 0.75rem;
-  }
-  &__error {
   }
 }
 </style>
