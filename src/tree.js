@@ -34,7 +34,11 @@ class PartTree {
       case '*':
       case '/':
         newOperator.left = this.lastOperand
-        if (this.lastOperator) this.lastOperator.right = newOperator
+        if (this.lastOperator) { 
+            this.lastOperator.right = newOperator
+        } else {
+            this.root = newOperator
+        }
         break
     }
 
@@ -53,18 +57,24 @@ class PartTree {
     } else {
       return node.data
     }
-    const right = node.right.data
-    return this.calculateFractions(left, right, node.data)
-    // switch (node.data) {
-    //   case '+':
-    //     return left + this.calculate(node.right)
-    //   case '-':
-    //     return left - this.calculate(node.right)
-    //   case '*':
-    //     return left * this.calculate(node.right)
-    //   case '/':
-    //     return left / this.calculate(node.right)
-    // }    
+    const right = this.calculate(node.right)
+    return this.calculateFractions(left, right, node.data) 
+  }
+
+  euclidSearch (a, b) {
+    if (b === 0) {
+      return a
+    } else {
+      return this.euclidSearch(b, a % b)
+    }
+  }
+
+  simplify (f) {
+    const divider = this.euclidSearch(f.numerator, f.denominator)
+    return {
+      numerator: f.numerator / divider,
+      denominator: f.denominator / divider
+    }
   }
 
   calculateFractions(a, b, operator) {
@@ -88,10 +98,11 @@ class PartTree {
         denominator = a.denominator * b.numerator
         break
     }
-    return {
+    let fraction = {
       numerator: numerator,
       denominator: denominator
     }
+    return this.simplify(fraction)
   }  
 
   result () {
@@ -100,8 +111,9 @@ class PartTree {
 }
  
 let exp = new PartTree({sign: '', fraction: {  numerator: 3,  denominator: 7 }})
-exp.addPart({sign: '-', fraction:  {  numerator: 2,  denominator: 5 }})
-exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 35 }})
+exp.addPart({sign: '*', fraction:  {  numerator: 5,  denominator: 2 }})
+exp.addPart({sign: '+', fraction:  {  numerator: 2,  denominator: 5 }})
+// exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 35 }})
 // exp.addPart({sign: '*', fraction:  {  numerator: 1,  denominator: 2 }})
 // exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 2 }})
 // exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 2 }})
