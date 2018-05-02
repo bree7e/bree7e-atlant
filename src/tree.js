@@ -9,7 +9,7 @@ class Node {
   }
 }
 
-class PartTree {
+export default class PartTree {
   constructor (part) {
     const newNode = new Node(part.fraction)
     this.root = newNode
@@ -34,10 +34,10 @@ class PartTree {
       case '*':
       case '/':
         newOperator.left = this.lastOperand
-        if (this.lastOperator) { 
-            this.lastOperator.right = newOperator
+        if (this.lastOperator) {
+          this.lastOperator.right = newOperator
         } else {
-            this.root = newOperator
+          this.root = newOperator
         }
         break
     }
@@ -47,18 +47,18 @@ class PartTree {
   }
 
   /**
-   * Обход In-order в глубину 
-   * @param {Node} node 
+   * Обход In-order в глубину
+   * @param {Node} node
    */
   calculate (node) {
-    let left = null 
+    let left = null
     if (node.left) {
       left = this.calculate(node.left)
     } else {
       return node.data
     }
     const right = this.calculate(node.right)
-    return this.calculateFractions(left, right, node.data) 
+    return this.calculateFractions(left, right, node.data)
   }
 
   euclidSearch (a, b) {
@@ -77,16 +77,16 @@ class PartTree {
     }
   }
 
-  calculateFractions(a, b, operator) {
+  calculateFractions (a, b, operator) {
     let numerator = 0
     let denominator = 0
     switch (operator) {
       case '+':
-        numerator = (a.numerator * b.denominator) + (b.numerator * a.denominator)
+        numerator = a.numerator * b.denominator + b.numerator * a.denominator
         denominator = a.denominator * b.denominator
         break
       case '-':
-        numerator = (a.numerator * b.denominator) - (b.numerator * a.denominator)
+        numerator = a.numerator * b.denominator - b.numerator * a.denominator
         denominator = a.denominator * b.denominator
         break
       case '*':
@@ -103,16 +103,16 @@ class PartTree {
       denominator: denominator
     }
     return this.simplify(fraction)
-  }  
+  }
 
   result () {
     return this.calculate(this.root)
   }
 }
- 
-let exp = new PartTree({sign: '', fraction: {  numerator: 3,  denominator: 7 }})
-exp.addPart({sign: '*', fraction:  {  numerator: 5,  denominator: 2 }})
-exp.addPart({sign: '+', fraction:  {  numerator: 2,  denominator: 5 }})
+
+let exp = new PartTree({ sign: '', fraction: { numerator: 3, denominator: 7 } })
+exp.addPart({ sign: '*', fraction: { numerator: 5, denominator: 2 } })
+exp.addPart({ sign: '+', fraction: { numerator: 2, denominator: 5 } })
 // exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 35 }})
 // exp.addPart({sign: '*', fraction:  {  numerator: 1,  denominator: 2 }})
 // exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 2 }})

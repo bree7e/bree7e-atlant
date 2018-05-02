@@ -22,6 +22,7 @@
 <script>
 import ExpressionPart from '@/components/fractions/ExpressionPart'
 import Fraction from '@/components/fractions/Fraction'
+import PartTree from '@/tree'
 
 export default {
   components: {
@@ -35,18 +36,28 @@ export default {
   },
   computed: {
     result: function () {
+      const xFraction = { sign: '', fraction: { numerator: null, denominator: null } }
       const partsCount = this.expressionParts.length
-      if (partsCount < 2) return null
-      let result = this.expressionParts[0]
-      // TODO рекурсивно обойти массив expressionParts выполняя действие sign над fraction
-      for (let i = 1; i < partsCount; i++) {
-        const next = this.expressionParts[i]
-        if ((next.fraction.numerator === '') || (next.fraction.denominator === '')) {
-          return { numerator: 0, denominator: 0 }
+      if (partsCount < 2) return xFraction
+
+      // нет пустых дробей
+      for (let i = 0; i < partsCount; i++) {
+        const part = this.expressionParts[i]
+        if ((part.fraction.numerator === '') || (part.fraction.denominator === '')) {
+          return xFraction
         }
-        result = this.calculateParts(result, next)
       }
-      result.fraction = this.simplify(result.fraction)
+
+      let expressionTree = new PartTree(this.expressionParts[0])
+      for (let i = 1; i < partsCount; i++) {
+        const part = this.expressionParts[i]
+        expressionTree.addPart(part)
+      }
+
+      const result = {
+        sign: '',
+        fraction: expressionTree.result()
+      }
       return result
     }
   },
@@ -65,58 +76,22 @@ export default {
         denominator: 5
       }
     })
-    this.addPart({
-      sign: '-',
-      fraction: {
-        numerator: 4,
-        denominator: 35
-      }
-    })
   },
   methods: {
     addEmptyPart: function () {
-      var emptyFraction = {
+      var emptyPart = {
         sign: '+',
         fraction: {
           numerator: '',
           denominator: ''
         }
       }
-      this.addPart(emptyFraction)
+      this.addPart(emptyPart)
     },
     addPart: function (part) {
       part.id = this.expressionParts.length
       // console.log('on add part', part)
       this.expressionParts.push(part)
-    },
-    calculateParts: function (a, b) {
-      let numerator
-      let denominator
-      switch (b.sign) {
-        case '+':
-          numerator = (a.fraction.numerator * b.fraction.denominator) + (b.fraction.numerator * a.fraction.denominator)
-          denominator = a.fraction.denominator * b.fraction.denominator
-          break
-        case '-':
-          numerator = (a.fraction.numerator * b.fraction.denominator) - (b.fraction.numerator * a.fraction.denominator)
-          denominator = a.fraction.denominator * b.fraction.denominator
-          break
-        case '*':
-          numerator = a.fraction.numerator * b.fraction.numerator
-          denominator = a.fraction.denominator * b.fraction.denominator
-          break
-        case '/':
-          numerator = a.fraction.numerator * b.fraction.denominator
-          denominator = a.fraction.denominator * b.fraction.numerator
-          break
-      }
-      return {
-        sign: a.sign,
-        fraction: {
-          numerator: numerator,
-          denominator: denominator
-        }
-      }
     },
     getPrimeNumbers: (max) => { // через сито
       let i
@@ -134,25 +109,11 @@ export default {
       }
       return result
     },
-    euclidSearch: function (a, b) {
-      if (b === 0) {
-        return a
-      } else {
-        return this.euclidSearch(b, a % b)
-      }
-    },
-    simplify: function (f) {
-      const divider = this.euclidSearch(f.numerator, f.denominator)
-      return {
-        numerator: f.numerator / divider,
-        denominator: f.denominator / divider
-      }
-    },
     onPartChange: function (partToChange) {
       const p = this.expressionParts.find(part => part.id === partToChange.id)
       p.fraction = partToChange.fraction
       p.sign = partToChange.sign
-      console.log('part changed', partToChange)
+      // console.log('part changed', partToChange)
     }
   }
 }
@@ -160,17 +121,16 @@ export default {
 
 <style lang='scss'>
 .expression {
-    display: flex;
-    flex-wrap: wrap;
-    &__equal-sign {
-        font-size: 3rem;
-        padding-top: 12px;
-        margin-left: 0.5rem;
-        margin-right: 1rem;
-    }
-    &__result {
-        padding: 0.5rem;
-    }
+  display: flex;
+  flex-wrap: wrap;
+  &__equal-sign {
+    font-size: 3rem;
+    padding-top: 12px;
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+  }
+  &__result {
+    padding: 0.5rem;
+  }
 }
-
 </style>

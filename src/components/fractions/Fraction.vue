@@ -26,6 +26,9 @@
         <div class="fraction__infinity" v-if="isInfinity()">
           ∞
         </div>
+        <div class="fraction__x" v-if="isX()">
+          X
+        </div>
     </div>
 </template>
 
@@ -61,6 +64,11 @@ export default {
         return true
       }
     },
+    isNoneFraction: function () {
+      if ((this.fraction.numerator === null) && (this.fraction.denominator === null)) {
+        return true
+      }
+    },
     isZeroFraction: function () {
       if ((this.fraction.numerator === 0) && (this.fraction.denominator !== 0)) {
         return true
@@ -70,7 +78,7 @@ export default {
       if (this.isEditable) {
         return true
       } else {
-        if ((!this.isInfinityFraction()) && (!this.isZeroFraction())) return true
+        if ((!this.isInfinityFraction()) && (!this.isZeroFraction()) && (!this.isNoneFraction())) return true
       }
     },
     isZero: function () {
@@ -78,9 +86,13 @@ export default {
         return true
       }
     },
-
     isInfinity: function () {
       if ((!this.isEditable) && this.isInfinityFraction()) {
+        return true
+      }
+    },
+    isX: function () {
+      if ((!this.isEditable) && this.isNoneFraction()) {
         return true
       }
     }
@@ -134,6 +146,10 @@ input::-webkit-inner-spin-button {
     padding-top: 5px;
   }
   &__infinity {
+    font-size: 3rem;
+    padding-top: 3px;
+  }
+  &__x {
     font-size: 3rem;
     padding-top: 3px;
   }
