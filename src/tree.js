@@ -109,22 +109,3 @@ export default class PartTree {
     return this.calculate(this.root)
   }
 }
-
-let exp = new PartTree({ sign: '', fraction: { numerator: 3, denominator: 7 } })
-exp.addPart({ sign: '*', fraction: { numerator: 5, denominator: 2 } })
-exp.addPart({ sign: '+', fraction: { numerator: 2, denominator: 5 } })
-// exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 35 }})
-// exp.addPart({sign: '*', fraction:  {  numerator: 1,  denominator: 2 }})
-// exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 2 }})
-// exp.addPart({sign: '+', fraction:  {  numerator: 1,  denominator: 2 }})
-
-// let exp = new PartTree({sign: '', fraction: '5'})
-// exp.addPart({sign: '/', fraction: '7'})
-// exp.addPart({sign: '*', fraction: '7'})
-// exp.addPart({sign: '+', fraction: '4'})
-// exp.addPart({sign: '+', fraction: '8'})
-// exp.addPart({sign: '*', fraction: '4'})
-// exp.addPart({sign: '/', fraction: '9'})
-// exp.addPart({sign: '-', fraction: '30'})
-
-console.log(exp.result())

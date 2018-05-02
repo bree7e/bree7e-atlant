@@ -65,17 +65,11 @@ export default {
     this.addPart({
       sign: '',
       fraction: {
-        numerator: 3,
-        denominator: 7
+        numerator: '',
+        denominator: ''
       }
     })
-    this.addPart({
-      sign: '+',
-      fraction: {
-        numerator: 2,
-        denominator: 5
-      }
-    })
+    this.addEmptyPart()
   },
   methods: {
     addEmptyPart: function () {
